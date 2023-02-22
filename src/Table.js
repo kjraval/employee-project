@@ -3,6 +3,9 @@ import React from "react";
 export default class Table extends React.Component {
 constructor(){
     super();
+    this.state = {
+        data: []
+    }
 }
 
 
@@ -11,6 +14,30 @@ constructor(){
 
 
     componentDidMount(){
+
+        let e = localStorage.getItem("employee") || [];
+        try{
+        let data = JSON.parse(e);
+        
+        this.setState({ data })
+        }catch(e){
+            this.setState({ data:[] })
+
+        }
+    }
+
+    remove(data) {
+
+        let allData = JSON.parse(localStorage.getItem("employee")) || [];
+
+        let index = allData.findIndex(e => e.code === data.code)
+        allData[index].isActive = false;
+
+
+        localStorage.setItem("employee", JSON.stringify(allData));
+
+        this.setState({data:allData})
+        alert(`Successfully Removed Employee`)
 
     }
 
@@ -44,53 +71,62 @@ constructor(){
                 <th scope="col" class="px-6 py-3">
                     Salary
                 </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Remove Employee
+                                </th>
             </tr>
         </thead>
         <tbody>
-            <tr class="border-b dark:bg-gray-800 dark:border-gray-700">
+
+                            {this.state.data.map((data) => {
+                                return <>
+                                    {data.isActive === true ?
+                        <tr class="border-b dark:bg-gray-800 dark:border-gray-700">        
                 <td class="px-6 py-4">
-                    Silver
+                                {data.code}
                 </td>
                 <td class="px-6 py-4">
-                    Silver
+                                {data.name}
                 </td>
               
                 <td class="px-6 py-4">
-                    Laptop
+                                {data.email}
                 </td>
+
                 <td class="px-6 py-4">
-                    $2999
+                                {data.contact}
                 </td>
-            </tr>
-            <tr class="border-b dark:bg-gray-800 dark:border-gray-700">
-            <td class="px-6 py-4">
-                    Silver
+
+                            <td class="px-6 py-4">
+                                {data.city}
                 </td>
-              <td class="px-6 py-4">
-                    White
+
+                            <td class="px-6 py-4">
+                                {data.joinningDate}
                 </td>
+
                 <td class="px-6 py-4">
-                    Laptop PC
+                                {data.salary}
                 </td>
+
+
+
                 <td class="px-6 py-4">
-                    $1999
+                                <button onClick={() => { this.remove(data) }} class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full">
+                                    Remove
+                                </button>
                 </td>
-            </tr>
-            <tr class="dark:bg-gray-800">
-            <td class="px-6 py-4">
-                    Silver
-                </td>
-                  <td class="px-6 py-4">
-                    Black
-                </td>
-                <td class="px-6 py-4">
-                    Accessories
-                </td>
-                <td class="px-6 py-4">
-                    $99
-                </td>
-            </tr>
-        </tbody>
+
+                        </tr>
+
+                        :
+                        null
+                    }
+                </>
+            })
+                            }
+
+                        </tbody>
     </table>
 </div>
 
